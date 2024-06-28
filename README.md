@@ -36,6 +36,9 @@ Query Parameters: id, designation, city, name
 │   │   │   └── com
 │   │   │       └── example
 │   │   │           └── demo
+|   |   |               ├── config
+│   │   │               │   ├── MongoConfig.java
+│   │   │               │   └── RedisConfig.java
 │   │   │               ├── controller
 │   │   │               │   └── MyController.java
 │   │   │               ├── models
