@@ -67,20 +67,30 @@ public class MyController {
         doc.put("description", employee.getDescription());
 
         mongoTemplate.insert(doc, "Employees");
-       // cacheService.updateEmployeeCache(doc);
+        //cacheService.updateEmployeeCache(doc);
 
         return ResponseEntity.ok(employee);
     }
 
     @GetMapping("/")
     public ResponseEntity<?> getEmployee() {
+    	List<Document> documents = cacheService.getAllEmployees();
+    	List<Employee> employees;
+    	if (documents == null || documents.isEmpty()) {
+    		documents = mongoTemplate.findAll(Document.class, "Employees");
+    		employees = documents.stream().map(this::documentToEmployee).collect(Collectors.toList());
+    		documents.forEach(cacheService::updateEmployeeCache);
+    		System.out.println("Data Fetched from DB");
+    	}
         //List<Document> documents = mongoTemplate.findAll(Document.class, "Employees");
         //List<Employee> employees = documents.stream().map(this::documentToEmployee).collect(Collectors.toList());
-    	List<Document> documents = cacheService.getAllEmployees();
-    	List<Employee> employees = documents.stream()
-                .map(this::documentToEmployee)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
+    	else {
+    		employees = documents.stream()
+                    .map(this::documentToEmployee)
+                    .filter(Objects::nonNull)
+                    .collect(Collectors.toList());
+    		System.out.println("Data Fetched from cache");
+    	}
         return ResponseEntity.ok(employees);
     }
 

@@ -29,7 +29,7 @@ public class CacheService {
     public Document updateEmployeeCache(Document employee) {
         String employeeJson = documentToJson(employee);
         redisTemplate.opsForValue().set("employee_" + employee.getInteger("id"), employeeJson);
-        redisTemplate.expire("employee_" + employee.getInteger("id"), 30, TimeUnit.SECONDS);
+        redisTemplate.expire("employee_" + employee.getInteger("id"), 60, TimeUnit.SECONDS);
         return employee;
     }
 
@@ -53,7 +53,7 @@ public class CacheService {
                     return jsonToDocument(employeeJson);
                 })
                 .collect(Collectors.toList());
-
+        //System.out.println("Data Fetched from Cache");
         return employees;
     }
 
